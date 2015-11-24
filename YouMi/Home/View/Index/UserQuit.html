@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<title>有米网</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="有米网是一个致力于为游戏爱好者创收的平台">
+	<meta name="keywords" content="创收,游戏,应用,试玩">
+	<meta name="author" content="有米网">
+    <script src="http://g.tbcdn.cn/fi/bui/jquery-1.8.1.min.js"></script>
+</head>
+<body >
+	<div>
+    	<form action="{:U('/Home/Index/UserReg')}" method="post" enctype="multipart/form-data">
+           用户　名: <input type="text" name="username" value=""> <br/>
+           密　　码： <input type="password" name="password" value=""> <br/>
+           确认密码： <input type="password" name="password2" value=""> <br/>
+           手　　机： <input type="password" name="telphone" value=""> <br/>
+           电　　话： <input type="password" name="phone" value=""> <br/>
+           qq　　　： <input type="password" name="qq" value=""> <br/>
+           邮　　箱： <input type="password" name="email" value=""> <br/>
+     	   <input type="submit" value="立即注册"　 >
+        </form>
+    </div>
+    
+    <script type="text/javascript">
+		var AjaxUrl = {
+			VerifyUrl : "{:U('Home/Home/Verify')}",
+		};
+		
+		$('.Refresh').click(function(){
+			$('img.Refresh').attr('src',AjaxUrl.VerifyUrl+'?'+Date.parse( new Date()));
+		});
+	</script>
+</body>
+</html>

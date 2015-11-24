@@ -1,0 +1,121 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title>我的应用</title>
+<script src="/Public/jquery/jquery-1.8.3.min.js"></script> 
+<link href='/Public/youmi/style/css/bui_css.css' rel="stylesheet" type="text/css" />
+<!--以下四个是时间插件-->
+<link href="/Public/Plugin/mta/style/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" media="all" href="/Public/Plugin/mta/style/css/daterangepicker-bs3.css" />
+<script type="text/javascript" src="/Public/Plugin/mta/style/js/moment.js"></script>
+<script type="text/javascript" src="/Public/Plugin/mta/style/js/daterangepicker.js"></script>
+</head>
+<body> 
+<!-- body title -->
+<div class="bodytitle">
+	<div id="h_title">我的应用</div>
+	<form action="{:U('AppManage/AppList')}" method="post">
+		<div class="margin_bottom">
+			<span class="span-right-space">
+			  上传日期：<input type="text" readonly="readonly" style="width: 185px" name="reservation" id="reservation" class="form-control" value="{$start_time|date='Y-m-d',###} - {$end_time|date='Y-m-d',###}" />
+				<script type="text/javascript">
+          $(document).ready(function() {
+             $('#reservation').daterangepicker(null, function(start, end, label) {
+             console.log(start.toISOString(), end.toISOString(), label);
+             });
+          });
+        </script>
+			</span>
+			<span class="span-right-space">应用名：<input type="text" name="name" class="input-back-bor" value="{$app_name}" /></span>
+			<span class="span-right-space">
+			  应用类型： <select name="app_type" style="width:80px;" class="input-back-bor" ><option value="0">-请选择-</option><option value="1" <if condition="$app_type eq 1" > selected </if> >游戏</option><option value="2" <if condition="$app_type eq 2" > selected </if>>应用</option></select>
+			</span>
+			<span class="span-right-space">
+			  投放类型： <select name="throw_type" style="width:80px;" class="input-back-bor" ><option value="0">-请选择-</option><option value="1" <if condition="$throw_type eq 1" > selected </if> >未投放</option><option value="2" <if condition="$throw_type eq 2" > selected </if>>已投放</option></select>
+			</span>
+			<span class="span-right-space">
+			  应用状态： <select name="stauts" style="width:80px;" class="input-back-bor" ><option value="0">-请选择-</option><option value="1" <if condition="$stauts eq 1" > selected </if> >审核</option><option value="2" <if condition="$stauts eq 2" > selected </if>>未审核</option></select>
+			</span>
+			<span class="span-right-space"><button type="submit" class="change_back"> 查询 </button></span>
+			<span class="span-right-space"><button type="button" id="createapp" class="change_back">创建应用</button></span>
+		</div>
+	</form>
+</div>
+
+<div class="subbox">  
+<div class="bui_content_b">
+  <div class="bui-content">
+      <table cellspacing="0" class="table table-bordered" width="1130px">
+		  <thead>
+			<tr class="phb_name phb_back phb_bors atim_tr">
+			  <th width="15"></th>
+			  <th>序号</th>
+			  <th>应用名</th>
+			  <th>类型</th>
+			  <th>封面图片</th>
+			  <th>文件大小</th>
+			  <th>下载次数</th>
+			  <th>状态</th>
+			  <th>投放价格</th>
+			  <th>投放状态</th>
+			  <th>添加时间</th>
+			  <th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+		   <volist name="app_list" id="v" key="key">
+			<tr align="center" class="phb_name <if condition="$key%2 eq 0"> phb_back </if>">
+			  <td class="input-left"><input value="{$v.id}" name="ordercheck" data-check-data="order{$v.id}" type="checkbox"/></td>
+			  <td>{$v.cid}</td>
+			  <td>{$v.app_name}</td>
+			  <td>
+				<eq name="v.app_type" value="1">游戏</eq>
+				<eq name="v.app_type" value="2" ><i style="color:red">应用</i></eq>
+			  </td>
+			  <td><img src="{$v.app_cover}" width="50" height="50"/></td>
+			  <td>{$v.app_size}</td>
+			  <td>{$v.app_downloadnum}</td>
+			  <td><switch name="v.stauts">
+				  <case value="1">审核</case>
+				  <case value="2"><font color='green'>未审核</font></case>
+				</switch>
+			  </td>
+			  <td>{$v.expend_money}</td>
+			  <td><switch name="v.is_throw">
+				  <case value="1">未投放</case>
+				  <case value="2"><font color='green'>已投放</font></case>
+				</switch> </td>
+			  <td>{$v.add_time|date='Y-m-d H:i:s',###}</td>
+			  <td> <div><a href="{:U('CheckApp/CreateAppThree/?app_id='.$v['id'])}" > 详情 </a> &nbsp;|&nbsp; <span id="hidd{$v.id}"><if condition="$v.is_delete eq 2 "> 已删除 <else /> <a href="javascript:;" id="onedel" delid="{$v.id}"> 删除 </a></if> </span> </div></td>
+			 </tr>
+		  </volist>    
+		</tbody>
+		</table>
+       <div id="checkbox_class" class="checkbox_class">
+		  <ul class="toolbar pull-left">
+			<li><label class="checkbox" for="check_box"><input type="checkbox" data-check="uncheck"><a href="javascript:;">全选</a></label></li>
+			<li><p><button class="change_back" id="alldel"> 批量删除 </button></p></li>
+		  </ul>
+		  <span class="app_counts" style="line-height:45px;margin-left:500px;">总数：{$app_counts} &nbsp;&nbsp; 已审核：{$is_stauts} &nbsp;&nbsp; 未审核：{$no_stauts} &nbsp;&nbsp; 已投放：{$is_throw} &nbsp;&nbsp; 未投放：{$no_throw}</span>
+			<div class="pages_css">
+			{$Page}
+			</div>
+		</div>
+  </div>
+</div>
+</div>
+
+<script src="/Public/youmi/js/WeiZhuan.js" type="text/javascript"></script> 
+<script type="text/javascript">
+  //需要使用的方法放到init,如果后面跟一个参数，框架内部会实例化
+  WeiZhuan.init({'init':'Check,AllDel,OneDel'});
+  var AjaxUrl = {
+    OrderDel : "{:U('Home/AppManage/appDel')}",
+  };
+   
+	$("#createapp").click(function(){
+   		window.location.href="{:U('Index/create_app')}";
+	});
+</script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title>金额消耗</title>
+<link href='/Public/youmi/style/css/bui_css.css' rel="stylesheet" type="text/css" />
+<script src="/Public/jquery/jquery-1.8.3.min.js"></script> 
+<link href="/Public/Plugin/mta/style/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" media="all" href="/Public/Plugin/mta/style/css/daterangepicker-bs3.css" />
+<script type="text/javascript" src="/Public/Plugin/mta/style/js/moment.js"></script>
+<script type="text/javascript" src="/Public/Plugin/mta/style/js/daterangepicker.js"></script>
+
+</head>
+<body> 
+<!-- body title -->
+<div class="bodytitle">
+  <div id="h_title">金额消耗</div>
+  <form action="{:U('PayLog/ExpendRecords')}" method="post">
+    <div class="margin_bottom" style="float:left; margin-right: 10px;">
+      <span class="span-right-space">
+			   消耗时间:  <input type="text" readonly="readonly" style="width: 200px" name="reservation" id="reservation" class="form-control" value="{$start_time|date='Y-m-d',###} - {$end_time|date='Y-m-d',###}" />
+       
+        <script type="text/javascript">
+          $(document).ready(function() {
+             $('#reservation').daterangepicker(null, function(start, end, label) {
+             console.log(start.toISOString(), end.toISOString(), label);
+             });
+          });
+        </script>
+	    </span>
+		<span class="span-right-space">应用名：<input type="text" name="app_name" class="input-back-bor" value="{$app_name}" /></span>
+      <span><button type="submit" class="change_back"> 查询 </button></span>
+    </div>
+  </form>
+	<div style="float:left; margin-top:-4px;">
+		<form action="__URL__{$strUrl}" method="post" >
+			<input type="submit" value="导出Excel" class="change_back"/>
+		</form>
+	</div>
+	<div style="clear:both;"></div>
+</div>
+
+<div class="subbox">  
+<div class="bui_content_b">
+  <div class="bui-content">
+      <table cellspacing="0" class="table table-bordered" width="1130px">
+        <thead>
+        <tr class="phb_name phb_back phb_bors atim_tr">
+          <th>序号</th>
+          <th>用户</th>
+          <th>应用名</th>
+          <th>金额</th>
+          <th>消耗时间</th>
+        </tr>
+        </thead>
+        <tbody>
+         <volist name="expend_list" id="v" key="key">
+          <tr align="center" id="hidd{$v.id}" class="phb_name <if condition="$key%2 eq 0"> phb_back </if>">
+            <td>{$v.id}</td>
+            <td>{$v.username}</td>
+            <td>{$v.app_name}</td>
+            <td>{$v.app_money}</td>
+            <td>{$v.add_time|date='Y-m-d H:i:s',###}</td>
+           </tr>
+        </volist>     
+        </tbody>
+      </table>
+      <div id="checkbox_class">
+        <span class="ml10" style="line-height:45px;">总条数：{$counts} &nbsp;&nbsp; 消费总金额：{$moneys} &nbsp;&nbsp;</span>
+  			<div class="pages_css">
+  			{$Page}
+  			</div>
+		  </div>
+  </div>
+</div>
+</div>
+</body>
+</html>

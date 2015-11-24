@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>91找游网-商家后台</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="91找游网是一个致力于为游戏爱好者创收的平台">
+	<meta name="keywords" content="创收,游戏,应用,试玩">
+	<meta name="author" content="91找游网">
+    <script src="/Public/jquery/jquery-1.7.2.js"></script>
+    <link href="/Public/youmi/style/css/User.css" type="text/css" rel="stylesheet" />
+</head>
+<body class="B_reg">
+<div class="TX_reg">
+    <div class="reg_hd">
+        <div class="top_lnk"> <a href="#">商家后台</a>|<a href="#" target="_blank">帮助</a> </div>
+    </div>
+    <div class="reg_main clearfix">
+        <div class="main_title">
+            <div class="main_tab"> <a href="{:U('Home/Index/UserReg')}" class="current" id="phone-register">商家注册</a> <a href="{:U('Home/Index/UserLogin')}" id="mail-register">用户登陆</a> </div>
+        </div>
+        <div class="reg_info clearfix"> 
+            <!--录入信息边栏-->
+            <div class="reg_aside">
+                <p class="have_ac">已有帐号，<a href="{:U('Home/Index/UserLogin')}">直接登录 >></a></p>
+            </div>
+            <!--/录入信息边栏--> 
+            <!--录入信息-->
+            <div class="reg_form reg_mobile" id="phone">
+                <form action="{:U('Home/Index/UserReg')}" method="post" name="Register" >
+                    <div class="title_note" node-type="title_note"></div>
+                    <div class="info_list clearfix">
+                        <div class="tit"><i>*</i>用户名：</div>
+                        <div class="ipt">
+                            <input class="reg_ipt" type="text" name="username" id="UserName" maxlength="11" data-check="UserNmae"/> <sapn id="MessUsername"></sapn>
+                        </div>
+                    </div>
+                    <div class="info_list clearfix">
+                        <div class="tit"><i>*</i>密码：</div>
+                        <div class="ipt">
+                            <input class="reg_ipt" type="password" name="password" maxlength="16" id="password" data-check="NumberOrLetter"/> <sapn id="MessPassword"></sapn>
+                        </div>
+                    </div>
+                    <div class="info_list clearfix">
+                        <div class="tit"><i>*</i>重复密码：</div>
+                        <div class="ipt">
+                            <input class="reg_ipt" type="password" name="password2" maxlength="16" id="password2" data-check="NumberOrLetter" /> <sapn id="MessPassword2"></sapn>
+                        </div>
+                    </div>
+                    <div class="info_list clearfix">
+                        <div class="tit"><i>*</i>电子邮件：</div>
+                        <div class="ipt">
+                            <input class="reg_ipt" type="text" name="email"  id="Email" data-check="Email"/> <sapn id="MessEmail"></sapn>
+                        </div>
+                    </div>
+                     <div class="info_list clearfix">
+                        <div class="tit"><i>*</i>验证码：</div>
+                        <div class="ipt ver_code">
+                            <input class="reg_ipt" type="text" name="Code" maxlength="5">
+                            <span class="ver_pic"><img src="{:U('Home/Home/Verify?t='.$time)}" class="Refresh"></span><a class="Refresh" href="#">看不清？</a>
+                        </div>
+                    </div>
+                    
+                    <div class="info_submit">
+                        <div class="ipt"> <a href="#" id="submit" data="Register" class="btn_sub"><span>立即注册</span></a> </div>
+                    </div>
+                    <div class="info_list clearfix">
+                        <div class="ipt verify">
+                            <p class="agreement"><a target="_blank" href="#">《微游人服务使用协议》</a></p>
+                        </div>
+                    </div>
+                    <input type="submit" value="" class="none">
+                </form>
+            </div>
+            <!--/录入信息--> 
+        </div>
+    </div>
+</div>
+<div class="reg_foot">
+     <p><a target="_blank" href="#">关于微游人</a><a target="_blank" href="#">关于我们</a><a target="_blank" href="#">联系我们</a><a target="_blank" href="#">意见反馈</a></p>
+      <p>Copyright © 1996 - 2013 HUIHU Corporation, All Rights Reserved 深圳为游人科技有限公司 <a target="_blank" href="#">版权所有</a></p>
+</div>
+<script src="/Public/youmi/js/WeiZhuan.js" type="text/javascript"></script> 
+<script type="text/javascript">
+//需要用到的Ajax地址
+var AjaxUrl = {
+	checkuser : "{:U('Home/Home/check_username')}",
+	checkemail : "{:U('Home/Home/email_check')}",
+	VerifyUrl : "{:U('Home/Home/Verify')}",
+}
+
+//需要使用的方法放到init,如果后面跟一个参数，框架内部会实例化
+	WeiZhuan.init({'init':'Submit,UserName,Email,PassWord,PassWord2'});
+	
+	$('.Refresh').click(function(){
+		$('img.Refresh').attr('src',AjaxUrl.VerifyUrl+'?'+Date.parse( new Date()));
+	});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>数据分析</title>
+<link href="/Public/Plugin/bui/assets/css/dpl-min.css" rel="stylesheet">
+<link href="/Public/Plugin/bui/assets/css/bui-min.css" rel="stylesheet">
+<script src="/Public/jquery/jquery-1.8.3.min.js"></script> 
+<script src="/Public/Plugin/bui/build/seed-min.js?t=201404241421"></script> 
+<link href="/Public/youmi/style/css/bui_css.css" rel="stylesheet">
+<link href="/Public/youmi/style/css/bui_css.css" rel="stylesheet">
+</head>
+<body>
+ <div class="bui-content">
+    <div class="row">
+		<span>
+			<label>选择时间：</label><input type="text" style="width:160px; height:20px;" name="start_time" value=" {$start_time|date='Y-m-d',###} " class="calendar"> <label>至</label> <input type="text" style="width:160px; height:20px;" id="endtime" name="end_time" value="{$end_time|date='Y-m-d',###}" class="calendar">
+			<button type="button" target="main_right"  href="{:U('Home/DataCount/UsersCount?starttime='.$starttime.'&endtime='.$endtime)}"   host="http://{$Think.server.HTTP_HOST}" id="submittime" class="anniu5 pl10 mt3" >确定</button>
+		  </span>
+		<span>
+			<select class="ml10 w100 mt5">
+			  <option value="0">请选择</option>
+			  <option href="{:U('Home/DataCount/UsersCount?action=yesterday')}" target="main_right" >昨天</option>
+			  <option href="{:U('Home/DataCount/UsersCount?action=week')}" target="main_right">本周</option>
+			  <option href="{:U('Home/DataCount/UsersCount?action=lastWeek')}" target="main_right">上周</option>
+			  <option href="{:U('Home/DataCount/UsersCount?action=match')}" target="main_right">本月</option>
+			  <option href="{:U('Home/DataCount/UsersCount?action=lastmatch')}" target="main_right">上个月</option>
+			</select>
+		  </span>
+		  
+		<div class="detail-section">
+		  <div id="canvas"></div>
+		</div>
+
+		<script type="text/javascript">
+		  var data = {
+			downarray: {$downarray},
+			categories: {$categories},
+			frist_name: "下载量",
+		  }
+		</script>
+
+    </div> 
+
+  </div>
+
+<script type="text/javascript" src="/Public/youmi/js/js/DataCount.js"></script>
+
+</body>
+</html> 

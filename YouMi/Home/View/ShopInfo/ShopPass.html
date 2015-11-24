@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>投放设置</title>
+<script src="/Public/jquery/jquery-1.8.3.min.js"></script> 
+<link href="/Public/youmi/style/css/bui_css.css" rel="stylesheet">
+<style type="text/css">
+    #myform{display: none;}
+
+</style>
+</head>
+<body>
+ <div class="bui-content">
+
+    <div class="control-group">
+        <label class="control-label">旧密码:</label>
+        <input type="password" name="password" id="password"><button class="button" id="checkpass" >验证</button>
+    </div>
+    <form action="{:U('ShopInfo/ShopPass')}" method="post" name="myform" id="myform">
+        <label class="control-label"><s>*</s>新密码：</label>
+        <input type="password" id="password1" name="password1" >
+
+        <label class="control-label"><s>*</s>确认密码：</label>
+        <input type="password" id="password2" name="password2" >
+
+        <button type="submit" class="button button-primary">提交</button>
+    </form>
+    <!--
+    <form action="{:U('ShopInfo/ShopPass')}" method="post" name="uppost" id="uppost">
+      	<p style="color:red">先填写旧的密码</p>
+			旧密　码：<input type="password" name="password"><input type="submit" value="验证"><br>
+				
+	</form>
+
+	<form action="{:U('ShopInfo/ShopPass')}" method="post" name="myform" id="myform">
+			新密　码：<input type="password" id="password1" name="password1"><br>
+			确认密码：<input type="password" id="password2" name="password2"><br>
+				<input type="submit" name="sub1" value="提交">
+	</form> -->
+</body>
+</html>
+ <script type="text/javascript">
+   
+</script>
+<script type="text/javascript" src="/Public/youmi/js/js/EditPassword.js"></script>
+
+

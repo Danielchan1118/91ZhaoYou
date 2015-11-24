@@ -1,0 +1,273 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>投放设置</title>
+<script src="/Public/jquery/jquery-1.8.3.min.js"></script> 
+<link href="/Public/youmi/style/css/bui_css.css" rel="stylesheet">
+<link href="/Public/youmi/style/css/throw_info.css" rel="stylesheet">
+ 
+<link rel="stylesheet" href="__PUBLIC__/youmi/style/cnmap.css" type="text/css">
+<link rel="stylesheet" href="__PUBLIC__/youmi/style/zTreeStyle.css" type="text/css">
+<script type="text/javascript" src="__PUBLIC__/js/jquery.ztree.core.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.ztree.excheck.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/raphael.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/chinamapPath.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/chinamap.js?ver=20140825_4"></script>
+
+<script src="/Public/Plugin/bui/build/seed-min.js?t=201404241421"></script> 
+<link href="/Public/Plugin/mta/style/css/bootstrap.min.css" rel="stylesheet">
+<link href="/Public/Plugin/mta/style/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" media="all" href="/Public/Plugin/mta/style/css/daterangepicker-bs3.css" />
+<script type="text/javascript" src="/Public/Plugin/mta/style/js/moment.js"></script>
+<script type="text/javascript" src="/Public/Plugin/mta/style/js/daterangepicker.js"></script>
+<style type="text/css">
+	.daterangepicker .ranges .input-mini{width:110px;} 
+
+</style>
+<script type="text/javascript">
+	<!--
+	var setting = {
+		check: {
+			enable: true,
+			autoCheckTrigger: true
+		},
+		data: {
+			simpleData: {
+				enable: true
+			}
+		},
+		callback: {
+			onCheck: onCheck,
+			onAsyncSuccess: onAsyncSuccess,
+			onClick: onClick
+		}
+	};
+	function onClick(event, treeId, treeNode, clickFlag) {
+		//showLog((clickFlag===1 ? "普通选中"     : (clickFlag===0 ? "<b>取消选中</b>" : "<b>追加选中</b>"));
+		if(!treeNode.isParent){
+			treeNode = treeNode.getParentNode();
+		}
+	}
+	
+	function onCheck(event, treeId, treeNode) {
+		treeNode.checkedEx = true;
+		syncMap();
+	}
+	function onAsyncSuccess(event, treeId, treeNode, msg) {
+		cancelHalf(treeNode);
+	}
+	function cancelHalf(treeNode) {
+		/*
+		if (treeNode.checkedEx) return;
+		var zTree = $.fn.zTree.getZTreeObj("treeMap");
+		treeNode.halfCheck = false;
+		zTree.updateNode(treeNode);	
+		*/		
+	}
+	function setMapColor(i,color){
+		china[i]['path'].color = color;
+		china[i]['path'].animate({ 
+				transform: "t30,0 s1.03 1.03", 
+				fill: color,//rgb(229, 211, 45)
+				stroke: "#ddd" 
+			}, 
+			100, "elastic");
+	}
+	function syncMap(){
+		var zTree = $.fn.zTree.getZTreeObj("treeMap");
+		var allpros = zTree.getNodes();
+		for(var i in allpros){
+			if(allpros[i].isParent){
+				if(allpros[i].getCheckStatus().half){
+					setMapColor(allpros[i].name, "rgb(195, 255, 200)");
+					//console.log('map：', allpros[i].name, ", halfCheck");
+					continue;
+				}
+				if(allpros[i].checked){
+					setMapColor(allpros[i].name, "rgb(250, 150, 100)");
+					//console.log('map：', allpros[i].name, ", checked");
+					continue;
+				}
+				
+				setMapColor(allpros[i].name, "#b0d0ec");
+				//console.log('map：', allpros[i].name, ", noCheck");
+			}
+		}
+	}
+	//加载树控件=======================================
+	
+	$(function(){
+		var zNodes = {$city_tree};
+		$.fn.zTree.init($("#treeMap"), setting, zNodes);
+		syncMap();
+		
+		$('#btnSearch').click(function(){
+			if(!confirm("确认要提交吗？")){
+				return;
+			}
+			var allids = new Array();
+			var zTree = $.fn.zTree.getZTreeObj("treeMap");
+			var allpros = zTree.getNodes();
+			for(var i in allpros){
+				var allcity = allpros[i].children;
+				for(var j in allcity){
+					if(!allcity[j].checked && !allcity[j].isParent){
+						allids.push(allcity[j].id);
+						//console.log('map：', allcity[j].name, allcity[j].id, ", unchecked");
+					}
+				}
+			}
+			$.ajax({
+				type:'post',
+				url:'/Home/ThrowInfo/ThrowDo',
+				dataType:'json',
+				data:{
+					"appid" : $('#lbClassName').attr('appid'),
+					"edit_id":"{$edit_id}",
+					"reservation":$("#reservationtime").val(),
+					"throw_type":$("#throw_type").val(),
+					"district":allids
+				},
+				success:function(data){
+					if(data.status==1){
+						alert(data.info);
+						window.location.href = data.url;
+					}else{
+						alert(data.info);
+					}
+				}
+			});
+		});
+	});
+
+	//应用列表==========================================
+	function initAppList(){
+		$(".controls #lbClassName").click(function(){
+			$(".dropdown").css("display","block"); 
+		});
+
+		var className = $.trim($("#lbClassName").text());
+		$(".select-list label a").click(function(){
+			$(".select-list label").removeClass("selected");
+			$(this).parent().addClass("selected");
+			$("#lbClassName").val($(this).html());
+			$("#lbClassName").attr("appid",$(this).attr('key'));
+			$(".dropdown").css("display","none");
+		}).each(function(){
+			if($(this).text() == className){
+				$(this).parent().addClass("selected");
+			}
+		});
+	}
+	
+	//加载服务器下发信息----------------------------------
+	function initFromServer(throwInfo){
+		//加载时间控件
+		var starttime = throwInfo.throw_starttime;
+		var endtime = throwInfo.throw_endtime;
+		$('#reservationtime').daterangepicker({
+			timePicker: true,
+			timePickerIncrement: 30,
+			format: 'YYYY-MM-DD hh:mm',
+			startDate:starttime,
+			endDate:endtime
+		}, function(start, end, label) {
+		});
+		$('#reservationtime').val(starttime+' - '+endtime);
+		//应用
+		$('#lbClassName').attr('appid',throwInfo.app_id);
+		if(""==="{$edit_id}"){
+			initAppList();
+		}else{
+			$('#lbClassName').val("{$app_name[0].app_name}");
+			$('#lbClassName').attr("readonly","readonly"); 
+		}
+		//投放类型
+		$("#throw_type").val(throwInfo.throw_type);
+		switch(parseInt(throwInfo.throw_type)){
+		case 1:
+		//地区
+			if(throwInfo.throw_content != null){
+				var districts = JSON.parse(throwInfo.throw_content);
+				var zTree = $.fn.zTree.getZTreeObj("treeMap");
+				for(treeIds in districts){
+					var node = zTree.getNodeByTId("treeMap_"+ districts[treeIds]);
+					if(node)
+						zTree.checkNode(node,false,true,true);
+				}
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	//-------------------------------
+	$(document).ready(function() {
+		var jsonObj = {$throws_json};
+		if(jsonObj){
+			initFromServer(jsonObj);
+		}
+	});
+	//-->
+</SCRIPT>
+</head>
+
+<body>
+<div class="bodytitle"><div id="h_title">添加投放应用</div> <span class="ml10"><a href="{:U('ThrowInfo/ThrowList')}" class="change_back"> 投放列表 </a></span></div>
+
+<div class="subbox">  
+  <div class="bui_content_b">
+	<div class="bui-content">
+
+      <div class="span24">
+        <form id="J_Form" class="form-horizontal" action="{:U('ThrowInfo/ThrowDo')}" enctype="multipart/form-data" method="post">
+             <div class="control-group">
+              <label class="control-label"><s>*</s>投放时间：</label>
+                 <div>
+                   <input type="text" style="width: 300px" name="reservation" id="reservationtime" class="form-control" value=" - "  class="span4"/>
+                </div>
+            </div>
+            
+            <div class="control-group">
+              <label class="control-label"><s>*</s>投放应用：</label>
+              <div class="controls">
+                <input type="text" class="input-back-bor" id="lbClassName"  name="throw_app" value="" style="width:300px;">
+              </div>
+              <div class="controls">
+                <div class="dropdown">
+					<div style="text-align:right;padding-right:3px"><a href="javascript:void(0);" onclick="$('.dropdown').css('display','none');">&nbsp;X&nbsp;</a></div>
+                  <div class="select-list cf">
+                  	<if condition="$num gt 0 ">
+                    <volist name="app_name" id="name_id">
+                      		<label class=""><a href="javascript:;" key="{$name_id.id}" class="radio-box"><?php echo substr($name_id['app_name'],0,22);?></a></label>
+                    </volist>
+                    <else />
+                    <span class="span_throws" style="margin-left: 162px;color: rgb(250, 150, 100);font-size: 15px;">没有投放的应用</span></if>
+                  </div>
+                </div>
+              </div>
+            </div>
+			<div class="control-group"><label class="control-label"><s>*</s>投放地区限制：</label></div>
+			<!--地图-->
+			<div id="ChinaMap">
+				<div id="map"></div>
+			</div> 
+			<!--树状列表-->			
+			<div class="zTreeBackground">
+				<ul id="treeMap" class="ztree"></ul>
+			</div>
+			<div style="clear:both"></div>
+		
+			<div class="form-actions span5 offset3">
+				<input type="hidden" name="edit_id" id="edit_id" value="{$throws.edit_id}">
+				<input type="hidden" name="throw_type" id="throw_type" value="{$throws.throw_type}">
+				<input id="btnSearch" type="button" class="change_back" name="dosubmit" value="提交" />
+			</div>
+        </form> 
+      </div>
+    </div>  
+  </div>
+</div>
+</body>
+</html>

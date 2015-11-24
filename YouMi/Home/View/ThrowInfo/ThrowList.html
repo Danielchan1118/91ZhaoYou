@@ -1,0 +1,101 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title>应用列表</title>
+<script src="/Public/jquery/jquery-1.8.3.min.js"></script> 
+<link href="/Public/youmi/style/css/bui_css.css" rel="stylesheet">
+<link href="/Public/Plugin/mta/style/css/bootstrap.min.css" rel="stylesheet">
+<link href="/Public/Plugin/mta/style/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" media="all" href="/Public/Plugin/mta/style/css/daterangepicker-bs3.css" />
+<script type="text/javascript" src="/Public/Plugin/mta/style/js/moment.js"></script>
+<script type="text/javascript" src="/Public/Plugin/mta/style/js/daterangepicker.js"></script>
+<style type="text/css">
+  .daterangepicker .ranges .input-mini{width:110px;} 
+
+</style>
+</head>
+<body> 
+<!-- body title -->
+<div class="bodytitle">
+  <div id="h_title">应用投放列表</div>
+  <form action="{:U('ThrowInfo/ThrowList')}" method="post">
+    <div class="margin_bottom">
+      <span class="span-right-space">
+            应用名： <input type="text" name="app_name" value="{$app_name}" class="input-back-bor" />
+      </span>
+    <span class="span-right-space">
+        投放日期： <input type="text" style="width: 260px" name="reservation" id="reservationtime" class="form-control" value="{$start_time|date='Y-m-d h:i',###} - {$end_time|date='Y-m-d h:i',###} "  class="span4"/>
+        
+        <script type="text/javascript">
+            $(document).ready(function() {
+              $('#reservationtime').daterangepicker({
+                timePicker: true,
+                timePickerIncrement: 30,
+                format: 'YYYY-MM-DD hh:mm'
+              }, 
+              function(start, end, label) {
+                console.log(start.toISOString(), end.toISOString(), label);
+              });
+           });
+        </script>
+         
+    </span>
+    <span class="span-right-space"><button type="submit" class="change_back"> 查询 </button></span>
+    <span><a href="{:U('ThrowInfo/ThrowSet')}" class="change_back"> 添加投放 </a></span>
+    </div>
+  </form>
+</div>
+
+<div class="subbox">  
+<div class="bui_content_b">
+  <div class="bui-content">
+      <table cellspacing="0" class="table table-bordered" width="1130px;">
+        <thead>
+        
+        <tr class="phb_name phb_back phb_bors atim_tr">
+          <th width="15"></th>
+              <th>序号</th>
+              <th>应用名</th>
+              <th>投放金额</th>
+              <th>投放截止时间</th>
+              <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+      <volist name="throw_list" id="v" key="key">
+        <tr align="center" id="hidd{$v.id}" class=" phb_name <if condition="$key%2 eq 0"> phb_back </if>">
+          <td class="input-left"><input value="{$v.id}" name="ordercheck" data-check-data="order{$v.id}" type="checkbox"/></td>
+          <td>{$v.id}</td>
+          <td>{$v.app_name}</td>
+          <td>{$v.expend_money}</td>
+          <td>{$v.throw_endtime|date='Y-m-d H:i:s',###}</td>
+          <td> <span><a href="{:U('/Home/ThrowInfo/ThrowSet?edit_id='.$v['id'])}"> 修改 &nbsp;|&nbsp;<a href="javascript:;" id="onedel" delid="{$v.id}" > 删除 </a></span></td>
+         </tr>
+      </volist> 
+
+        </tbody>
+      </table>
+       <div id="checkbox_class">
+		  <ul class="toolbar pull-left">
+			<li><label class="checkbox" for="check_box"><input type="checkbox" data-check="uncheck"><a href="javascript:;">全选</a></label></li>
+			<li><p><button  class="change_back" id="alldel"> 批量删除 </button></p></li>
+		  </ul>
+      <span class="app_counts" style="line-height:45px;margin-left:500px;">总条数：{$throw_count} &nbsp;&nbsp;</span>
+			<div class="pages_css">
+			   {$Page}
+			</div>
+		</div>
+  </div>
+</div>
+</div>
+<script src="/Public/youmi/js/WeiZhuan.js" type="text/javascript"></script> 
+<script type="text/javascript">
+  //需要使用的方法放到init,如果后面跟一个参数，框架内部会实例化
+  WeiZhuan.init({'init':'Check,AllDel,OneDel'});
+
+  var AjaxUrl = {
+    OrderDel : "{:U('/Home/ThrowInfo/ThrowDel')}",
+  };
+</script>
+</body>
+</html>

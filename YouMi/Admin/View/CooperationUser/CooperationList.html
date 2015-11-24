@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<script src="/Public/jquery/jquery-1.8.3.min.js"></script> 
+<link href='/Public/youmi_admin/style/css/bui_css.css' rel="stylesheet" type="text/css" /> 
+	<title>商家列表</title>
+</head>
+<body >
+<div class="bodytitle">
+	<div id="h_title">商家列表</div>
+	<form action="{:U('/Admin/CooperationUser/CooperationList')}" method="post">
+        <div class="margin_bottom">
+        <span class="span-right-space">
+          商户名：<input type="text" name="username" value="{$username}" class="input-back-bor"> 
+        </span>
+        <span><button type="submit" class="button button-primary"> 查询 </button></span>
+        </div>
+    </form>
+</div>
+
+<div class="subbox">  
+<div class="bui_content_b">
+  <div class="bui-content">
+      <table cellspacing="0" class="table table-bordered">
+        <thead>
+        <tr class="phb_name phb_back phb_bors atim_tr">
+		  <th></th>
+          <th>序号</th>
+          <th>商户名</th>
+          <th>上传应用数</th>
+          <th>投放应用数</th>
+          <th>平台余额</th>
+          <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+       <volist name="coo_list" id="vo" key="key">
+        <tr align="center" id="hidd{$vo.id}" class="phb_name <if condition="$key%2 eq 0"> phb_back </if>">
+        <td ><input value="{$vo.id}" name="ordercheck" data-check-data="order{$vo.id}" type="checkbox"/></td>
+        <td height="25">{$vo.cid}</td>
+        <td><a href="javascript:;" id="usershows" att="{$vo.id}">{$vo.username}</a></td>
+        <td>{$vo.app_count}</td>
+        <td>{$vo.throw_count}</td>
+        <td>{$vo.money}</td>
+        <td><span><a href="javascript:;" id="btnShows" att="{$vo.id}">修改</a> | <a href="javascript:;" id="onedel" delid="{$vo.id}" >删除</a><if condition="$vo.status eq 3 "> | <a href="{:U('CooperationUser/CooperationInfo?lockid='.$vo['id'].'&Unlock=1')}" style="color:red;">解锁</a><else /> | <a href="{:U('CooperationUser/CooperationInfo?lockid='.$vo['id'])}" >锁定</a></span></if>
+        </td>
+       </tr>
+      </volist>    
+        </tbody>
+      </table>
+     <div id="checkbox_class">
+		  <ul class="toolbar pull-left">
+        <li><label class="checkbox" for="check_box"><input type="checkbox" data-check='uncheck'><a href="javascript:;" >全选</a></label></li>
+        <li><p><button class="button" id="alldel" > 批量终止 </button></p></li>
+      </ul>
+      <span class="lm1"> <i class="lr1">上传总应用：{$app_counts} </i><i class="lr1">总投放应用:{$throw_counts}</i> 总平台余额:{$moneys}</span>
+			<div class="pages_css">
+			{$Page}		
+			</div>
+	</div>
+  </div>
+</div>
+</div>
+
+<div id="cooperuser" style="display:none;">
+   <form action="{:U('/Admin/CooperationUser/CooperationInfo')}" method="post" id="uppost">
+    <table cellpadding="0" cellspacing="0" class="table table-bordered table-tr">
+      <tr>
+        <td>用户名：</td>
+        <td><input name="username" type="text"  id="username" value="" class="input-back-bor" /></td>
+      </tr>
+      <tr>
+        <td>密码：</td>
+        <td><input name="passward" type="password"  id="password" value="" class="input-back-bor" /></td>
+      </tr>
+      <tr>
+        <td>手机：</td>
+        <td><input name="mobilephone" type="text" id="mobilephone"  value="" class="input-back-bor" /></td>
+      </tr>
+      <tr>
+        <td>电话：</td>
+        <td><input name="phone" type="text"  id="phone" value="" class="input-back-bor" /></td>
+      </tr>
+      <tr>
+        <td>QQ：</td>
+        <td><input name="qq" type="text" id="qq" value="" class="input-back-bor" /></td>
+      </tr>
+      <tr>
+        <td>电子邮件：</td>
+        <td><input name="email" type="text" id="email" value="" class="input-back-bor" /></td>
+      </tr>
+      <tr>
+        <td>余额：</td>
+        <td><input name="money" type="text" id="money" value="" class="input-back-bor" /></td>
+      </tr>
+		<span id="editsub"></span>
+    </table>
+  </form>
+</div>
+
+<script src="/Public/Plugin/bui/build/bui-min.js?t=201404241421"></script> 
+<script type="text/javascript">
+	BUI.use(['bui/overlay','bui/form'],function(Overlay,Form){
+		var dialog = new Overlay.Dialog({
+			title:'商家信息操作',
+			width:500,
+			height:320,
+			//配置DOM容器的编号
+			contentId:'cooperuser',
+			success:function () {
+			  $("#uppost").submit();
+			  this.close();
+			}
+		  });
+
+		$('tbody tr td #btnShows').on('click',function () {
+			var edit_id = $(this).attr("att");
+			showdatas(edit_id);
+			dialog.show();
+		});
+		
+		$('tbody tr td #usershows').on('click',function () {
+			var edit_id = $(this).attr("att");
+			showdatas(edit_id);
+			dialog.show();
+		});
+	});
+	
+	function showdatas(edit_id){
+		$.ajax({
+			type:'post',
+			url:"{:U('CooperationUser/CooperationInfo')}",
+			dataType:'json',
+			data:{"edit_id" : edit_id},
+			success:function(data){
+				if(data){
+          $("#username").val(data.username);
+          $("#password").val(data.password);
+					$("#email").val(data.email);
+					$("#mobilephone").val(data.mobilephone);
+					$("#money").val(data.money);
+					$("#phone").val(data.phone);
+					$("#qq").val(data.qq);
+					$("#editsub").html("<input type='hidden' name='editid' id='editid' value="+data.id+">");
+				}else{
+					alert("操作错误");
+				}
+			}
+		});	
+	}
+	
+</script>
+<script src="/Public/youmi/js/WeiZhuan.js" type="text/javascript"></script> 
+<script type="text/javascript">
+  //需要使用的方法放到init,如果后面跟一个参数，框架内部会实例化
+  WeiZhuan.init({'init':'Check,AllDel,OneDel'});
+  var AjaxUrl = {
+    OrderDel : "{:U('CooperationUser/DelCooperationUser')}",
+  };
+
+  $("#uppost").submit(function(){
+      var username = $("#username").val();
+      var email = $("#email").val();
+      var mobilephone = $("#mobilephone").val();
+      var money = $("#money").val();
+      var phone = $("#phone").val();
+      var qq = $("#qq").val();
+      if(username =='' || email =='' || mobilephone =='' || money =='' || phone =='' || qq ==''){
+        alert('操作失败，数据不能为空！');
+        return false;
+      }
+
+    });
+
+</script>
+
+</body>
+</html>

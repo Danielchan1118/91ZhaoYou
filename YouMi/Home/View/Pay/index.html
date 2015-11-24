@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<script src="http://g.tbcdn.cn/fi/bui/jquery-1.8.1.min.js"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>广告管理列表</title>
+<style type="text/css">
+.subbody tr td { border-top:0px; }
+.subbody .colname { 
+    text-align: right;
+    vertical-align: top;
+}
+
+
+
+</style>
+<link type="text/css" rel="stylesheet" href="__PUBLIC__/youmi/style/css/css.css">
+<link type="text/css" rel="stylesheet" href="__PUBLIC__/youmi/style/css/pay.css">
+<script type="text/javascript"  src="__PUBLIC__/youmi/js/pay.js"></script>
+<script>
+  $(function(){
+    $("#divmenu > ul > li:gt(0)",window.parent.document).remove();
+  <volist name="payname" id="vo">
+    $("#divmenu > ul",window.parent.document).append($('<li data="{$vo.id}">{$vo.payname}</li>'));
+
+  </volist> 
+  $("#divmenu > ul > li:gt(0)",window.parent.document).click(function(){
+    $(this).attr('class',""); 
+    $(this).attr('class',"menucursel"); 
+    var name = $(this).attr('data');
+    $.ajax({
+            type:'get',
+            data:'name='+name,
+            dataType:'json',
+            url:'{:U("Home/Pay/selectid")}',
+            success:function(data){
+                $('#tag').val(data.tag);
+                $('#paynames').val(data.payname);
+                if('alipay' == data.tag){ zfb_ts(); $('#bank').hide();}
+                if('yeepay' == data.tag){ wy_ts(); $('#bank').show();}     
+            }
+      });});
+  });
+</script>
+
+</head>
+<body>
+
+<div class="subbox">
+  <div class="subtitle">易宝充值</div>
+  <div class="subbody">
+    <form action="{:U('/Home/Pay/index')}" method="post" id="myform">
+      <table border="0" cellpadding="0" cellspacing="0">
+      <tr>
+        <td class="colname">
+           您需要充值的账号：
+        </td>
+        <td>
+           <input type="text" name="number" value="{$username}" id="number" /> 
+        </td>
+      </tr>
+      <tr>
+        <td class="colname">
+          确认您充值的账号：  
+        </td>
+        <td>
+          <input type="text" name="number1" value="{$username}" id="number1" />  
+        </td>
+      </tr>
+      <tr>
+        <td class="colname">
+          充值金额：
+        </td>
+        <td>
+          <input type="radio" name="othermoney"  value="10">10元
+          <input type="radio" name="othermoney"  value="30">30元
+          <input type="radio" name="othermoney"  value="50">50元
+          <input type="radio" name="othermoney"  value="100" checked="checked">100元
+          <input type="radio" name="othermoney"  value="200">200元<br/>
+          <input type="radio" name="othermoney"  value="300">300元
+          <input type="radio" name="othermoney"  value="500">500元
+          <input type="radio" name="othermoney"  value="1000">1000元<br/>
+
+          <input type="radio" name="othermoney"/>其他<input type="text" name="money" value="" id='money' onkeyup="ylsu(this)"><span id='tishi'></span>  
+        </td>
+      </tr>
+        <tr><td colspan="2"><input type="submit" class="btn" value="确认充值"/></td></tr>
+      </table>   
+
+      <!--
+
+      账　　号：<input type="text" name="number" value="{$username}" id="number" /><br/>
+      确认账号：<input type="text" name="number1" value="{$username}" id="number1" /><br/>
+      充值金额: 
+      <input type="radio" name="othermoney"  value="10">10元
+      <input type="radio" name="othermoney"  value="30">30元
+      <input type="radio" name="othermoney"  value="50">50元
+      <input type="radio" name="othermoney"  value="100" checked="checked">100元
+      <input type="radio" name="othermoney"  value="200">200元
+      <input type="radio" name="othermoney"  value="300">300元
+      <input type="radio" name="othermoney"  value="500">500元
+      <input type="radio" name="othermoney"  value="1000">1000元
+
+      其他<input type="text" name="money" value="" id='money' onkeyup="ylsu(this)"><span id='tishi'></span><br/>
+        <div id="bank" style="display: none;">
+          <span id="zggs"><label><input name="pay_bank" checked="checked" type="radio" value="ICBC-NET-B2C" /><a href="javascript:selectbank('ICBC-NET-B2C');">中国工商银行</a></label></span> 
+          <span id="zgjh"><label><input name="pay_bank" type="radio" value="CCB-NET-B2C" /><a href="javascript:selectbank('CCB-NET-B2C');">中国建设银行</a></label></span> 
+          <span id="zgly"><label><input name="pay_bank" type="radio" value="ABC-NET-B2C" /><a href="javascript:selectbank('ABC-NET-B2C');">中国农业银行</a></label></span> 
+          <span id="zgzs"><label><input name="pay_bank" type="radio" value="CMBCHINA-NET-B2C" /><a href="javascript:selectbank('CMBCHINA-NET-B2C');">招商银行</a></label></span> 
+          <span id="zgyh"><label><input name="pay_bank" type="radio" value="BOC-NET-B2C" /><a href="javascript:selectbank('BOC-NET-B2C');">中国银行</a></label></span> 
+          <span id="zgjt"><label><input name="pay_bank" type="radio" value="BOCO-NET-B2C" /><a href="javascript:selectbank('BOCO-NET-B2C');">交通银行</a></label></span> 
+          <span id="zggd"><label><input name="pay_bank" type="radio" value="CEB-NET-B2C" /><a href="javascript:selectbank('CEB-NET-B2C');">中国光大银行</a></label></span> 
+          <span id="zgms"><label><input name="pay_bank" type="radio" value="CMBC-NET-B2C" /><a href="javascript:selectbank('CMBC-NET-B2C');">中国民生银行</a></label></span> 
+          <span id="zgxy"><label><input name="pay_bank" type="radio" value="CIB-NET-B2C" /><a href="javascript:selectbank('CIB-NET-B2C');">兴业银行</a></label></span> 
+          <span id="zgpf"><label><input name="pay_bank" type="radio" value="SPDB-NET-B2C" /><a href="javascript:selectbank('SPDB-NET-B2C');">浦发银行</a></label></span> 
+          <span id="zgdy"><label><input name="pay_bank" type="radio" value="HKBEA-NET-B2C" /><a href="javascript:selectbank('HKBEA-NET-B2C');">东亚银行</a></label></span> 
+          <span id="zgzx"><label><input name="pay_bank" type="radio" value="ECITIC-NET-B2C" /><a href="javascript:selectbank('ECITIC-NET-B2C');">中信银行</a></label></span> 
+          <span id="szfz"><label><input name="pay_bank" type="radio" value="SDB-NET-B2C" /><a href="javascript:selectbank('SDB-NET-B2C');">深圳发展银行</a></label></span> 
+          <span id="zgyz"><label><input name="pay_bank" type="radio" value="POST-NET-B2C" /><a href="javascript:selectbank('POST-NET-B2C');">中国邮政储蓄银行</a></label></span> 
+          <span id="zgpa"><label><input name="pay_bank" type="radio" value="PINGANBANK-NET" /><a href="javascript:selectbank('PINGANBANK-NET');">平安银行</a></label></span> 
+          <span id="zgbh"><label><input name="pay_bank" type="radio" value="CBHB-NET-B2C" /><a href="javascript:selectbank('CBHB-NET-B2C');">渤海银行</a></label></span> 
+          <span id="zgbj"><label><input name="pay_bank" type="radio" value="BCCB-NET-B2C" /><a href="javascript:selectbank('BCCB-NET-B2C');">北京银行</a></label></span> 
+          <span type="radio" value="NJCB-NET-B2C" /><a href="javascript:selectbank('NJCB-NET-B2C');">南京银行</a></label></span>
+        </div>
+      <input type="hidden" name="tag" id="tag" value=""><input type="hidden" name="content" id="content" value=""><input type="hidden" name="payname" id="paynames" value=""><br/>
+      <input type="submit" name="" value="确认充值"/>
+
+    </form>               
+    <div class="tscon">
+      <h1>温馨提示：</h1>
+      <p>
+        <span>银行卡支付说明：</span>
+        <p>您必须开通了网上银行业务；</p>
+        <p>网上银行开通办法请咨询当地所属银行；</p>
+        <p>请您关闭所有屏蔽弹出窗口之类的功能，否则在线支付将无法继续，比如：3721、上网助手、google、toolbar、alexa toolbar、baidu等；</p>
+        <p>如果您用信用卡支付，请确认该信用卡的网上交易限额大于等于您的充值金额；</p>
+        <p>请充值时务必确认好您的充值金额准确无误后再进行充值，避免输错金额导致的失误，如因未仔细确认金额造成的充值问题，我们将一律不予处理此类退款申诉。</p>
+      </p>
+    </div>
+
+     <-->
+
+  </div>
+</div> 
+</body>
+</html>
+
+  

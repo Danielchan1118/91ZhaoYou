@@ -1,0 +1,340 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<title>找游网-商家后台</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<link href='/Public/youmi/style/css/css.css' rel="stylesheet" type="text/css" />
+    <script src="/Public/jquery/jquery-1.8.3.min.js"></script> 
+	<link href="/Public/youmi/style/css/payCss.css" rel="stylesheet"type="text/css" />
+	<script type="text/javascript" src="/Public/youmi/js/payJs.js"></script>
+</head>
+<body>
+	<!-- logo -->
+	<div id="divtop">
+		<div class="toplogo"> <a href="/"><img src="__PUBLIC__/youmi/image/webLogo.png"/></a></div>
+		<div class="topwelcome">
+			<span style="color:#3689D7"><?php echo $_SESSION['username']; ?></span>&nbsp;   <span style="color:#A0A0A0">欢迎回来</span><br>
+			<ul>
+				<li><a href="/">首页</a></li>	<li>|</li>
+				<li><a href="/Index/UserQuit">注销帐号</a></li>
+			</ul>
+		</div>
+	</div>
+	
+	<!-- nav -->
+	<div id="divnav">
+		<div style="width:1440px;margin:0px auto;">
+			<ul>
+				<li data="all"><a href="/">数据分析</a></li>
+				<li class="curnav"><a href="{:U('/Home/Pay')}">充值中心</a></li>
+			</ul>
+		</div>
+	</div>  
+
+<div id="wrap">
+	<div id="container">
+		<div id="content_1">
+<script type="text/javascript">   
+		  function ptczsetpay(){
+			  var isLogin=false;
+			if(isLogin)
+			{
+			  $("#youid").show();
+			  $("#youpintb").show();
+			  $("#czwhere").hide();
+			  $("#czzh1").hide();
+			  $("#czzh2").hide();
+			  ptbcyx_set();
+			}else{
+				 var aumt=$(".jeother").val()!=""?$(".jeother").val():$('input:radio[name="pay_amount"]:checked').val();
+				$("body").append("<div id='czinfobg'></div>")
+				$("#czinfobg").append("<div id='czinfobox'></div>")
+				$("#czinfobox").html("<div class='dlptzh'><h1><span>请先登录您的83wan平台帐号！</span><a href='javascript:void(0);' onclick='loginClose()' id='czinfobox_close'>close</a></h1><span class='qrtjBtn'><a href=\"http://www.83wan.com/\">立即登录</a><a href='javascript:void(0);' onclick='tjqrboxclose()'>返回</a></span></div>")		 
+			}
+		  }  
+
+		 /*提交*/
+
+		function tjcon(){
+			$("#czinfobox").addClass("czerrots")
+			$("#czinfobox").html("<div class='qrcz_ts'><h1><span>请在新打开的字符页面上完成付款充值！</span><a href='javascript:void(0);' onclick='tjqrboxclose()' id='czinfobox_close'>close</a></h1><ul><li class=\"tscon1\">付款前请不要关闭或刷新此窗口。</li><li class=\"tscon2\">付款前请不要关闭或刷新此窗口。</li></ul><span class='qrtjBtn'><a href=\"http://www.83wan.cn/article/\"  target=\"_blank\">付款遇到问题</a><a href='javascript:void(0);' onclick='tjqrboxclose()'>返回</a></span></div>")
+		}
+
+		function tjtccon(){
+			var zhcon=$("#member_name").val()
+			var rezhcon=$("#re_member_name").val()
+			var othermoneyval=$(".jeother").val()!=""?$(".jeother").val():$('input:radio[name="pay_amount"]:checked').val();
+			var iswhere=$('input:radio[name="pay_platform"]:checked').val();
+			if(iswhere==0){
+				if($("#gameSet a").html()=="选择游戏"){
+					$("#msg_for_game").html("游戏不能为空!");
+					return false;
+				}
+
+				if($("#qfSet a").html()=="选择区服"){
+					$("#msg_for_game").html("服务器不能为空!");
+					return false;
+				}
+			}else{
+				isUserSate=true;
+			}
+
+			if(rezhcon==zhcon){
+				isUserSate=true;
+			}
+
+			if(zhcon == "" ||rezhcon == ""|| rezhcon!=zhcon){
+					$("#zhts1").html("游戏账号不能为空!");
+					return false;
+			}
+
+			if(isUserSate){	
+
+				$("#zhts1").html("");
+				if(ptcyxpd==0){
+					if(othermoneyval<1){
+						$("#ylsuname").html("<font id=\"jeerro\">充值金额请限制在1元到50000元之间</font>")
+					}else{
+						var aumt=$(".jeother").val()!=""?$(".jeother").val():$('input:radio[name="pay_amount"]:checked').val();
+							$("#pay_money").val(aumt);
+							$("body").append("<div id='czinfobg'></div>")
+							$("#czinfobg").append("<div id='czinfobox'></div>")
+							$("#czinfobox").html("<div class='qrcz'><h1><span>确认充值信息</span><a href='javascript:void(0);' onclick='tjqrboxclose()' id='czinfobox_close'>close</a></h1><ul><li class='qrcz_name'>您的充值方式：</li><li>"+$("#pay_type_name").html()+"</li></ul><ul><li class='qrcz_name'>您的订单编号：</li><li>"+$("#trade_sn").val()+"</li></ul><ul><li class='qrcz_name'>您的充值帐号：</li><li>"+$("#member_name").val()+"</li></ul><ul><li class='qrcz_name'>您的金额：</li><li>"+aumt+"元</li></ul><span class='qrtjBtn'><input type='button' onclick='document.getElementById(\"form1\").submit();tjcon();'  value='确认提交'/><a href='javascript:void(0);' onclick='tjqrboxclose()' id='czinfobox_close2'>返回修改\>\></a></span></div>")
+									}
+				}
+			}
+		}
+</script>
+
+	<form id="form1" name="form1" target="_blank" method="post" action="/pay/index">
+		<input type="hidden" name="payname" value="" id="pay_name"/>
+		<input type="hidden" name="pay_money" value="" id="pay_money"/>
+		<input type="hidden" name="order_id" value="{$order_id}" />
+		<input type="hidden" name="pay_tag" value="" id="pay_tag"/>
+
+				<div id="neiye-layout">
+					<div id="neiye_pay_left">
+						<div id="neiye_pay_left_list">
+							<div id="neiye_pay_left_list_t"></div>
+							<div id="neiye_pay_left_list_c">
+								<ul>
+									<volist name="pay_type_list" id="game">
+									<li><a id="opt_{$game.tag}"
+										onClick="javascript:on_pay_type_change(this,'{$game.tag}','{$game.fee}','{$game.payname}','','http://www.83wan.com/index.php?m=content&c=index&a=show&catid=28&id=23','{$game.id}');"
+										class="paytype"><span class="name"><em></em><i>{$game.payname}</i></span></a></li>
+									</volist>
+								</ul>
+
+							</div>
+							<div id="neiye_pay_left_list_f"></div>
+							<div class="clear"></div>
+						</div>
+						<div id="neiye_pay_left_infor">
+							<!--<div id="payboxtop"></div>-->
+							<div id="neiye_pay_left_infor_t">
+								<div class="paytitle">
+									<span class="title">您当前选择的是&ldquo;<strong id="pay_type_name"></strong>”的充值方式
+									</span><!-- <span class="help" id="payhelp"><a href="{:U('article/read')}?aid=463" target="_blank">充值遇到问题</a></span> -->
+								</div>
+							</div>
+							<div id="neiye_pay_left_infor_c">
+								<div class="neiye_pay_left_infor_c_1">
+									<div class="neiye_pay_left_infor_c_1_c">
+										<ul id="czzhbox">
+											<li id="youid" style="display: none;"><span class="name">您充值的账号：</span><em></em></li>
+											<li id="youpintb" style="display: none;"><span class="name">您的平台币余额：</span><em><font>0</font>平台币</em></li>
+											<li id="czzh1"><span id="cz_zh" class="name">您需要充值的帐号：</span>
+												<span class="zh"> <input type="text" name="trade_sn" id="trade_sn" value="{$order_id}"style="display: none;"> 
+												<input type="text" name="member_name" id="member_name" readonly value="<?php echo $_SESSION['username']; ?>" class="zhanghao"></span>
+												<em id="zhts1"></em></li>
+											<li id="czzh2"><span id="qrcz_zh" class="name">请确认充值的帐号：</span>
+											<span class="zh"><input name="re_member_name" readonly type="text" onkeyup="zhyits()" id="re_member_name" value="<?php echo $_SESSION['username']; ?>" class="zhanghao"></span>
+											<em id="zhts2"></em></li>
+											<div class="clear"></div>
+										</ul>
+									</div>
+								</div>
+								
+								<div class="neiye_pay_left_infor_c_1 jebox">
+									<div class="neiye_pay_left_infor_c_1_c">
+										<ul>
+											<li><span class="jename">充值金额：</span> <span id="je_set" class="select_game"> </span></li>
+											<li id='other_amount' style="display: none;"></li>
+											<div class="clear"></div>
+										</ul>
+									</div>
+								</div>
+
+								<div class="clear"></div>
+
+								<div id="bank" style="display: none;">
+									<span id="zggs"><label><input name="pay_bank" checked="checked" type="radio" value="ICBC-NET-B2C" />
+										<a href="javascript:selectbank('ICBC-NET-B2C');">中国工商银行</a></label></span> 
+										<span id="zgjh"><label><input name="pay_bank" type="radio" value="CCB-NET-B2C" />
+										<a href="javascript:selectbank('CCB-NET-B2C');">中国建设银行</a></label></span> 
+										<span id="zgly"><label><input name="pay_bank" type="radio" value="ABC-NET-B2C" />
+										<a href="javascript:selectbank('ABC-NET-B2C');">中国农业银行</a></label></span>
+										<span id="zgzs"><label><input name="pay_bank" type="radio" value="CMBCHINA-NET-B2C" />
+										<a href="javascript:selectbank('CMBCHINA-NET-B2C');">招商银行</a></label></span>
+										<span id="zgyh"><label><input name="pay_bank" type="radio" value="BOC-NET-B2C" />
+										<a href="javascript:selectbank('BOC-NET-B2C');">中国银行</a></label></span>
+										<span id="zgjt"><label><input name="pay_bank" type="radio" value="BOCO-NET-B2C" />
+										<a href="javascript:selectbank('BOCO-NET-B2C');">交通银行</a></label></span> 
+										<span id="zggd"><label><input name="pay_bank" type="radio" value="CEB-NET-B2C" />
+										<a href="javascript:selectbank('CEB-NET-B2C');">中国光大银行</a></label></span>
+										<span id="zgms"><label><input name="pay_bank" type="radio" value="CMBC-NET-B2C" />
+										<a href="javascript:selectbank('CMBC-NET-B2C');">中国民生银行</a></label></span> 
+										<span id="zgxy"><label><input name="pay_bank" type="radio" value="CIB-NET-B2C" />
+										<a href="javascript:selectbank('CIB-NET-B2C');">兴业银行</a></label></span>
+										<span id="zgpf"><label><input name="pay_bank" type="radio" value="SPDB-NET-B2C" />
+										<a href="javascript:selectbank('SPDB-NET-B2C');">浦发银行</a></label></span> 
+										<span id="zgdy"><label><input name="pay_bank" type="radio" value="HKBEA-NET-B2C" />
+										<a href="javascript:selectbank('HKBEA-NET-B2C');">东亚银行</a></label></span>
+										<span id="zgzx"><label><input name="pay_bank" type="radio" value="ECITIC-NET-B2C" />
+										<a href="javascript:selectbank('ECITIC-NET-B2C');">中信银行</a></label></span>
+										<span id="szfz"><label><input name="pay_bank" type="radio" value="SDB-NET-B2C" />
+										<a href="javascript:selectbank('SDB-NET-B2C');">深圳发展银行</a></label></span>
+										<span id="zgyz"><label><input name="pay_bank" type="radio" value="POST-NET-B2C" />
+										<a href="javascript:selectbank('POST-NET-B2C');">中国邮政储蓄银行</a></label></span> 
+										<span id="zgpa"><label><input name="pay_bank" type="radio" value="PINGANBANK-NET" />
+										<a href="javascript:selectbank('PINGANBANK-NET');">平安银行</a></label></span>
+										<span id="zgbh"><label><input name="pay_bank" type="radio" value="CBHB-NET-B2C" />
+										<a href="javascript:selectbank('CBHB-NET-B2C');">渤海银行</a></label></span>
+										<span id="zgbj"><label><input name="pay_bank" type="radio" value="BCCB-NET-B2C" />
+										<a href="javascript:selectbank('BCCB-NET-B2C');">北京银行</a></label></span>
+										<span id="zgnj"><label><input name="pay_bank" type="radio" value="NJCB-NET-B2C" />
+										<a href="javascript:selectbank('NJCB-NET-B2C');">南京银行</a></label></span>
+								</div>
+								
+								<div class="neiye_pay_left_infor_c_2" id="tjanniu">
+									<div class="pay">
+										<a href="#neiye_pay_left_infor_t" id="tjButton" class="tjBtn" onClick="tjtccon()">提交</a>
+									</div>
+								</div>
+								
+							</div>
+
+							<div id="neiye_pay_left_infor_f"></div>
+							<div id="wxts">
+								<div class="tstop"></div>
+								<div class="tscon">
+									<h1>温馨提示：</h1>
+									<p><span>银行卡支付说明：</span>
+									<p>您必须开通了网上银行业务；</p>
+									<p>网上银行开通办法请咨询当地所属银行；</p>
+									<p>请您关闭所有屏蔽弹出窗口之类的功能，否则在线支付将无法继续，比如：3721、上网助手、google、toolbar、alexa toolbar、baidu等；</p>
+									<p>如果您用信用卡支付，请确认该信用卡的网上交易限额大于等于您的充值金额；</p>
+									<p>请充值时务必确认好您的充值金额准确无误后再进行充值，避免输错金额导致的失误，如因未仔细确认金额造成的充值问题，我们将一律不予处理此类退款申诉。</p>
+                                    </p>
+								</div>
+
+								<div class="tsbottom"></div>
+							</div>
+							<div id="rengong" style="display:none;">
+								<?php echo $pay_type_list[6]['content']; ?>	
+							</div>	
+
+							<div class="clear"></div>
+
+						</div>
+
+					</div>
+
+					<div class="clear"></div>
+
+				</div>
+				<div id="tj"></div>
+
+			</form>
+
+<script type="javascript/text">
+
+$(document).ready(function(){
+
+	var $name =$.cookie('name');
+
+	if($name){
+
+			$('#member_name').val($name);	
+
+			$('#re_member_name').val($name);	
+	}else{
+
+		$('#member_name').val('');	
+
+		$('#re_member_name').val('');	
+
+	}
+	$.ajax({
+
+		type:'post',
+
+		data:'',
+
+		url:"{:U('pay/create_order')}",
+
+		error:function(){
+
+			 $('#trade_sn').html("");	
+
+		},
+
+		cache: false,
+
+		dataType:'json',
+
+		success:function(data){
+
+			$('#trade_sn').val(data.orderid);	
+
+		}
+
+	}); 
+
+	$('#member_name').blur(function(){
+		var $username= $(this).val();
+		if($username=='' || $username.length<5){
+			$("#zhts1").html("账号不存在!"); 
+			return false;
+		}else{
+			$.ajax({
+				type:'get',
+				data:'username='+$username,
+				dataType:'json',
+				error:function(){
+					$("#zhts1").html("账号不存在!"); 
+				},
+
+				success:function(data){
+					if(data.flag=="1"){
+						$("#zhts1").html("<a style='color:green;'>恭喜你，帐号正确</a>"); 
+						isUserSate=true;
+					}
+					else{
+						$("#zhts1").html("账号不存在!"); 
+					}
+				},
+
+				url:"{:U('pay/u_check')}"
+
+			});
+
+		}
+
+})
+
+})
+
+</script>
+        </div>
+			<div style="clear: both;"></div>
+		</div>
+	</div>
+
+	<!-- footer -->
+	<div id="divfoot">
+		Copyright © 2014 Shenzhen W.Y.R Technology Co., Ltd <br />
+		深圳微游人科技有限公司版权所有
+	</div>
+</body>
+</html>
